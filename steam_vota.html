@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏆 Contest Labriola STEAM 2026</title>
+    <meta name="description" content="Vota la migliore app creata dagli studenti del Liceo Labriola - Contest STEAM 2026">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container { max-width: 1400px; margin: 0 auto; }
+
+        header { text-align: center; color: white; margin-bottom: 30px; }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle { font-size: 1.1em; opacity: 0.9; margin-bottom: 20px; }
+
+        .contest-banner {
+            background: rgba(255,255,255,0.15);
+            border: 2px solid rgba(255,255,255,0.4);
+            border-radius: 15px;
+            padding: 12px 20px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+            display: inline-block;
+            font-size: 1em;
+            color: white;
+        }
+        .contest-banner span { font-weight: bold; color: #ffd700; }
+
+        .top-actions {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .leaderboard-btn {
+            background: linear-gradient(135deg, #ffd700, #ff9500);
+            color: #333;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(255,215,0,0.4);
+        }
+        .leaderboard-btn:hover { transform: scale(1.05); box-shadow: 0 6px 20px rgba(255,215,0,0.6); }
+
+        .search-container { max-width: 600px; margin: 0 auto 30px; }
+        .search-box {
+            width: 100%;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 30px;
+            font-size: 16px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        }
+        .search-box:focus { outline: none; box-shadow: 0 5px 30px rgba(0,0,0,0.3); }
+
+        .sort-bar {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .sort-btn {
+            background: rgba(255,255,255,0.15);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+            padding: 8px 18px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        .sort-btn.active, .sort-btn:hover {
+            background: rgba(255,255,255,0.35);
+            border-color: white;
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .app-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+            position: relative;
+        }
+        .app-card:hover { transform: translateY(-5px); box-shadow: 0 15px 40px rgba(0,0,0,0.3); }
+
+        .rank-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            z-index: 5;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+        .rank-1 { background: linear-gradient(135deg, #ffd700, #ff9500); }
+        .rank-2 { background: linear-gradient(135deg, #c0c0c0, #a0a0a0); }
+        .rank-3 { background: linear-gradient(135deg, #cd7f32, #a0522d); }
+
+        .app-preview {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+
+        .app-info { padding: 20px; }
+        .app-title { font-size: 1.3em; font-weight: bold; margin-bottom: 10px; color: #333; }
+        .app-author {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        .app-description { color: #666; font-size: 0.95em; line-height: 1.5; margin-bottom: 15px; }
+
+        .card-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 20px;
+            border-top: 1px solid #f0f0f0;
+            background: #fafafa;
+        }
+
+        .like-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: none;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            padding: 8px 18px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 600;
+            color: #666;
+            transition: all 0.3s;
+            user-select: none;
+        }
+        .like-btn:hover:not(.voted) {
+            border-color: #ff4757;
+            color: #ff4757;
+            background: rgba(255,71,87,0.05);
+            transform: scale(1.05);
+        }
+        .like-btn.voted {
+            border-color: #ff4757;
+            background: linear-gradient(135deg, #ff4757, #ff6b81);
+            color: white;
+            cursor: default;
+        }
+        .like-btn .heart { font-size: 18px; transition: transform 0.2s; }
+        .like-btn:hover:not(.voted) .heart { transform: scale(1.3); }
+        .like-btn.liked-anim .heart { animation: heartPop 0.4s ease; }
+        @keyframes heartPop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.6); }
+            100% { transform: scale(1); }
+        }
+
+        .like-count { font-weight: 700; min-width: 20px; text-align: center; }
+        .voted-label { font-size: 12px; color: #999; }
+
+        /* Modal classifica */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .modal.active { display: flex; }
+
+        .leaderboard-modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 35px;
+            max-width: 550px;
+            width: 100%;
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+        .leaderboard-title { text-align: center; font-size: 2em; font-weight: bold; color: #333; margin-bottom: 5px; }
+        .leaderboard-subtitle { text-align: center; color: #888; margin-bottom: 25px; font-size: 0.9em; }
+
+        .podium { display: flex; justify-content: center; align-items: flex-end; gap: 10px; margin-bottom: 30px; }
+        .podium-item { text-align: center; flex: 1; max-width: 140px; }
+        .podium-img { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; margin: 0 auto 8px; display: block; border: 3px solid #ddd; }
+        .podium-name { font-size: 0.8em; font-weight: 600; color: #333; margin-bottom: 4px; line-height: 1.2; }
+        .podium-votes { font-size: 0.85em; color: #666; }
+        .podium-bar { border-radius: 8px 8px 0 0; display: flex; align-items: center; justify-content: center; font-size: 1.5em; margin-top: 8px; }
+        .podium-1 .podium-bar { height: 80px; background: linear-gradient(135deg, #ffd700, #ff9500); }
+        .podium-2 .podium-bar { height: 55px; background: linear-gradient(135deg, #c0c0c0, #a0a0a0); }
+        .podium-3 .podium-bar { height: 40px; background: linear-gradient(135deg, #cd7f32, #a0522d); }
+
+        .leaderboard-list { list-style: none; }
+        .leaderboard-item { display: flex; align-items: center; gap: 15px; padding: 12px 15px; border-radius: 10px; margin-bottom: 8px; background: #f8f9fa; }
+        .lb-rank { font-size: 1.2em; font-weight: bold; color: #888; min-width: 30px; text-align: center; }
+        .lb-img { width: 44px; height: 44px; border-radius: 8px; object-fit: cover; flex-shrink: 0; }
+        .lb-info { flex: 1; }
+        .lb-name { font-weight: 600; color: #333; font-size: 0.95em; }
+        .lb-author { font-size: 0.8em; color: #888; }
+        .lb-votes { background: linear-gradient(135deg, #667eea, #764ba2); color: white; border-radius: 20px; padding: 4px 14px; font-weight: bold; font-size: 0.9em; white-space: nowrap; }
+        .lb-close { width: 100%; margin-top: 20px; padding: 12px; background: #f0f0f0; border: none; border-radius: 10px; font-size: 16px; cursor: pointer; font-weight: 600; color: #555; }
+        .lb-close:hover { background: #e0e0e0; }
+        .no-votes-msg { text-align: center; color: #aaa; padding: 30px; font-size: 1.1em; }
+
+        .loading { text-align: center; color: white; padding: 40px; font-size: 1.2em; }
+        .empty-state { text-align: center; color: white; padding: 60px 20px; }
+        .empty-state-icon { font-size: 4em; margin-bottom: 20px; opacity: 0.7; }
+        .empty-state-text { font-size: 1.3em; opacity: 0.9; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1>📱 Contest Labriola STEAM</h1>
+        <p class="subtitle">Liceo Scientifico Labriola — Roma</p>
+        <div class="contest-banner">🏆 <span>1° Contest STEAM 2026</span> — Vota la migliore app creata quest'anno!</div>
+    </header>
+
+    <div class="top-actions">
+        <button class="leaderboard-btn" onclick="showLeaderboard()">🏆 Classifica Contest</button>
+    </div>
+
+    <div class="search-container">
+        <input type="text" class="search-box" id="searchBox" placeholder="🔍 Cerca app per nome, autore o descrizione...">
+    </div>
+
+    <div class="sort-bar">
+        <button class="sort-btn active" id="sortRecent" onclick="setSort('recent')">🕐 Recenti</button>
+        <button class="sort-btn" id="sortVotes" onclick="setSort('votes')">❤️ Più votate</button>
+        <button class="sort-btn" id="sortName" onclick="setSort('name')">🔤 Nome</button>
+    </div>
+
+    <div id="loading" class="loading">⏳ Caricamento app in corso...</div>
+    <div id="gallery" class="gallery" style="display:none;"></div>
+    <div id="emptyState" class="empty-state" style="display:none;">
+        <div class="empty-state-icon">📱</div>
+        <div class="empty-state-text">Nessuna app trovata.</div>
+    </div>
+</div>
+
+<!-- Modal Classifica -->
+<div id="leaderboardModal" class="modal">
+    <div class="leaderboard-modal-content">
+        <div class="leaderboard-title">🏆 Classifica Contest</div>
+        <div class="leaderboard-subtitle">1° Contest Labriola STEAM 2026</div>
+        <div id="leaderboardContent"></div>
+        <button class="lb-close" onclick="closeLeaderboard()">Chiudi</button>
+    </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyDpcJBwUZJrVzidaToXH5bfvV8h7LtuMQU",
+        authDomain: "hopeboard-da041.firebaseapp.com",
+        databaseURL: "https://hopeboard-da041-default-rtdb.europe-west1.firebasedatabase.app",
+        projectId: "hopeboard-da041",
+        storageBucket: "hopeboard-da041.firebasestorage.app",
+        messagingSenderId: "660906863783",
+        appId: "1:660906863783:web:ac031459c188c314bdbf82"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+    const appsRef = database.ref('interactive-apps');
+    const votesRef = database.ref('steam-votes');
+
+    let apps = [];
+    let votes = {};
+    let searchTerm = '';
+    let sortMode = 'recent';
+
+    // ─── Device ID anti-doppio voto ────────────────────────────────────────────
+    function getDeviceId() {
+        let id = localStorage.getItem('steam_device_id');
+        if (!id) {
+            id = 'dev_' + Math.random().toString(36).substr(2, 12) + '_' + Date.now().toString(36);
+            localStorage.setItem('steam_device_id', id);
+        }
+        return id;
+    }
+    const DEVICE_ID = getDeviceId();
+
+    function hasVoted(key) {
+        return votes[key]?.voters?.[DEVICE_ID] === true;
+    }
+    function getVoteCount(key) {
+        return votes[key]?.count || 0;
+    }
+
+    // ─── Voto ──────────────────────────────────────────────────────────────────
+    async function voteApp(firebaseKey, event) {
+        event.stopPropagation();
+        if (hasVoted(firebaseKey)) return;
+
+        try {
+            await votesRef.child(firebaseKey).transaction(current => {
+                if (current === null) return { count: 1, voters: { [DEVICE_ID]: true } };
+                if (current.voters?.[DEVICE_ID]) return; // già votato, abort
+                return { count: (current.count || 0) + 1, voters: { ...(current.voters || {}), [DEVICE_ID]: true } };
+            });
+
+            if (!votes[firebaseKey]) votes[firebaseKey] = { count: 0, voters: {} };
+            votes[firebaseKey].count = (votes[firebaseKey].count || 0) + 1;
+            if (!votes[firebaseKey].voters) votes[firebaseKey].voters = {};
+            votes[firebaseKey].voters[DEVICE_ID] = true;
+
+            // Aggiorna UI della card
+            const btn = document.querySelector(`[data-vote-key="${firebaseKey}"]`);
+            if (btn) {
+                btn.classList.add('voted', 'liked-anim');
+                btn.disabled = true;
+                btn.querySelector('.heart').textContent = '❤️';
+                btn.querySelector('.like-count').textContent = getVoteCount(firebaseKey);
+                const footer = btn.closest('.card-footer');
+                if (footer) footer.querySelector('.voted-label').textContent = '✅ Hai votato';
+                setTimeout(() => btn.classList.remove('liked-anim'), 400);
+            }
+
+            // Aggiorna badge rank
+            renderGallery();
+        } catch (err) {
+            console.error('Errore nel voto:', err);
+        }
+    }
+
+    // ─── Classifica ────────────────────────────────────────────────────────────
+    function showLeaderboard() {
+        const sorted = [...apps].sort((a, b) => getVoteCount(b.firebaseKey) - getVoteCount(a.firebaseKey));
+        const container = document.getElementById('leaderboardContent');
+
+        if (!sorted.length || sorted.every(a => getVoteCount(a.firebaseKey) === 0)) {
+            container.innerHTML = '<div class="no-votes-msg">🗳️ Nessun voto ancora. Sii il primo!</div>';
+        } else {
+            let html = '';
+            const top3 = sorted.slice(0, Math.min(3, sorted.length));
+
+            if (top3.length >= 2) {
+                const podiumOrder = top3.length >= 3 ? [top3[1], top3[0], top3[2]] : [top3[1], top3[0]];
+                const podiumClass = ['podium-2', 'podium-1', 'podium-3'];
+                const podiumEmoji = ['🥈', '🥇', '🥉'];
+                html += '<div class="podium">';
+                podiumOrder.forEach((app, i) => {
+                    if (!app) return;
+                    html += `
+                        <div class="podium-item ${podiumClass[i]}">
+                            <img src="${app.image || generatePlaceholder(app.name)}" class="podium-img" onerror="this.src='${generatePlaceholder(app.name)}'">
+                            <div class="podium-name">${escapeHtml(app.name)}</div>
+                            <div class="podium-votes">❤️ ${getVoteCount(app.firebaseKey)}</div>
+                            <div class="podium-bar">${podiumEmoji[i]}</div>
+                        </div>`;
+                });
+                html += '</div>';
+            }
+
+            html += '<ul class="leaderboard-list">';
+            sorted.forEach((app, i) => {
+                const rankEmoji = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `${i + 1}`;
+                html += `
+                    <li class="leaderboard-item">
+                        <div class="lb-rank">${rankEmoji}</div>
+                        <img src="${app.image || generatePlaceholder(app.name)}" class="lb-img" onerror="this.src='${generatePlaceholder(app.name)}'">
+                        <div class="lb-info">
+                            <div class="lb-name">${escapeHtml(app.name)}</div>
+                            <div class="lb-author">👤 ${escapeHtml(app.author)}</div>
+                        </div>
+                        <div class="lb-votes">❤️ ${getVoteCount(app.firebaseKey)}</div>
+                    </li>`;
+            });
+            html += '</ul>';
+            container.innerHTML = html;
+        }
+        document.getElementById('leaderboardModal').classList.add('active');
+    }
+
+    function closeLeaderboard() {
+        document.getElementById('leaderboardModal').classList.remove('active');
+    }
+
+    // ─── Caricamento ───────────────────────────────────────────────────────────
+    async function loadApps() {
+        try {
+            const [appsSnap, votesSnap] = await Promise.all([
+                appsRef.once('value'),
+                votesRef.once('value')
+            ]);
+            const appsData = appsSnap.val();
+            apps = appsData ? Object.keys(appsData).map(k => ({ firebaseKey: k, ...appsData[k] })) : [];
+            votes = votesSnap.val() || {};
+        } catch (e) {
+            console.error('Errore caricamento:', e);
+            apps = []; votes = {};
+        }
+        document.getElementById('loading').style.display = 'none';
+        renderGallery();
+    }
+
+    // ─── Sort ──────────────────────────────────────────────────────────────────
+    function setSort(mode) {
+        sortMode = mode;
+        document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById('sort' + mode.charAt(0).toUpperCase() + mode.slice(1)).classList.add('active');
+        renderGallery();
+    }
+
+    function getFilteredSorted() {
+        let list = [...apps];
+        if (searchTerm) {
+            const t = searchTerm.toLowerCase();
+            list = list.filter(a =>
+                a.name.toLowerCase().includes(t) ||
+                a.description.toLowerCase().includes(t) ||
+                a.author.toLowerCase().includes(t)
+            );
+        }
+        if (sortMode === 'votes') list.sort((a, b) => getVoteCount(b.firebaseKey) - getVoteCount(a.firebaseKey));
+        else if (sortMode === 'name') list.sort((a, b) => a.name.localeCompare(b.name));
+        else list.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+        return list;
+    }
+
+    // ─── Render ────────────────────────────────────────────────────────────────
+    function renderGallery() {
+        const gallery = document.getElementById('gallery');
+        const emptyState = document.getElementById('emptyState');
+        const list = getFilteredSorted();
+
+        if (!list.length) {
+            gallery.style.display = 'none';
+            emptyState.style.display = 'block';
+            return;
+        }
+
+        gallery.style.display = 'grid';
+        emptyState.style.display = 'none';
+
+        // Badge top 3 per voti
+        const rankMap = {};
+        [...apps].sort((a, b) => getVoteCount(b.firebaseKey) - getVoteCount(a.firebaseKey))
+            .forEach((a, i) => { if (i < 3 && getVoteCount(a.firebaseKey) > 0) rankMap[a.firebaseKey] = i + 1; });
+
+        gallery.innerHTML = list.map(app => {
+            const safeUrl = (app.url || '').replace(/'/g, '&#39;');
+            const voted = hasVoted(app.firebaseKey);
+            const count = getVoteCount(app.firebaseKey);
+            const rank = rankMap[app.firebaseKey];
+            const rankBadge = rank ? `<div class="rank-badge rank-${rank}">${rank === 1 ? '🥇' : rank === 2 ? '🥈' : '🥉'}</div>` : '';
+
+            return `
+            <div class="app-card" onclick="openApp('${safeUrl}', event)">
+                ${rankBadge}
+                <img src="${app.image || generatePlaceholder(app.name)}"
+                     alt="${app.name}" class="app-preview" loading="lazy"
+                     onerror="this.src='${generatePlaceholder(app.name)}'">
+                <div class="app-info">
+                    <span class="app-author">👤 ${escapeHtml(app.author)}</span>
+                    <div class="app-title">${escapeHtml(app.name)}</div>
+                    <div class="app-description">${escapeHtml(app.description)}</div>
+                </div>
+                <div class="card-footer">
+                    <button class="like-btn ${voted ? 'voted' : ''}"
+                            data-vote-key="${app.firebaseKey}"
+                            onclick="voteApp('${app.firebaseKey}', event)"
+                            ${voted ? 'disabled' : ''}>
+                        <span class="heart">${voted ? '❤️' : '🤍'}</span>
+                        <span class="like-count">${count}</span>
+                    </button>
+                    <span class="voted-label">${voted ? '✅ Hai votato' : 'Vota questa app!'}</span>
+                </div>
+            </div>`;
+        }).join('');
+    }
+
+    function openApp(url, event) {
+        if (event.target.closest('.like-btn') || event.target.closest('.card-footer')) return;
+        if (url) window.open(url, '_blank');
+    }
+
+    function generatePlaceholder(name) {
+        const initial = name.charAt(0).toUpperCase();
+        const colors = ['#667eea','#f093fb','#4facfe','#43e97b','#fa709a'];
+        let hash = 0;
+        for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
+        const color = colors[Math.abs(hash) % colors.length];
+        return `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='200'%3E%3Crect fill='${encodeURIComponent(color)}' width='320' height='200'/%3E%3Ctext fill='white' font-size='80' font-family='Arial' x='50%25' y='50%25' text-anchor='middle' dy='.3em'%3E${initial}%3C/text%3E%3C/svg%3E`;
+    }
+
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text || '';
+        return div.innerHTML;
+    }
+
+    let searchDebounce;
+    document.getElementById('searchBox').addEventListener('input', e => {
+        clearTimeout(searchDebounce);
+        searchDebounce = setTimeout(() => { searchTerm = e.target.value.trim(); renderGallery(); }, 250);
+    });
+
+    document.getElementById('leaderboardModal').addEventListener('click', e => {
+        if (e.target === document.getElementById('leaderboardModal')) closeLeaderboard();
+    });
+
+    loadApps();
+</script>
+</body>
+</html>
